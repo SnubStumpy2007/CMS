@@ -1,97 +1,40 @@
 const express = require('express')
 const mysql = require('mysql2')
+const figlet = require('figlet')
+const cTable = require('console.table');
+
+const connection = require('db')
+
 
 const app = express()
 
-const db = mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    password: "",
-    database: "CMS",
-})
 
 
-// Connect to DB
-db.connect((err) => {
-    if(err) {
-        throw err;
-        console.log(err)
-    }
-})
 
+// ----------VIEW------------
 
-// create DB
-app.get("/createdb", (req, res) => {
-    let sql = "CREATE DATABASE nodemysql"
-    db.query(sql,(err) => {
-        if(err){
-            throw err
-        } else {
-            res.send("Database Created")
-        }
-    })
-})
+figlet("Welcome to the CMS!", function (err, data) {
+  if (err) {
+    console.log("Something went wrong...");
+    console.dir(err);
+    return;
+  }
+  console.log(data);
+});
+const viewAllDepartments = () => {
+  return connection.promise().query('SELECT * FROM department');
+};
 
-app.get("/employee1", (req, res) =>
-{
-    let post = {name: "Elize Lutus", designation: "Chief Healing Artes Officer"}
-    let sql = "INSERT INTO employee SET?";
-    let query = db.query(sql, post, (err) => {
-        if(err){
-            throw err
-        } else {
-            res.send("Database Created")
-        }
-    })
-})
+const addDepartment = () => {
+  return connection.promise().query('INSERT INTO department (name) VALUES (?)', [departmentName]);
+}
 
-app.get("/updateemployee/:id", (req, res) => {
+const viewRoles = () => {
+  return connection.promise().query('SELECT * FROM department');
+};
 
-    let newName = "Updated name";
-  
-    let sql = `UPDATE employee SET name = '${newName}' WHERE id = ${req.params.id}`;
-  
-    let query = db.query(sql, (err) => {
-  
-      if (err) {
-  
-        throw err;
-  
-      }
-  
-      res.send("Post updated...");
-  
-    });
-  
-  });
+const viewEmployees = () => {
+  return connection.promise().query('INSERT INTO department (name) VALUES (?)', [departmentName]);
+}
 
-  pp.get("/deleteemployee/:id", (req, res) => {
-
-    let sql = `DELETE FROM employee WHERE id = ${req.params.id}`;
-  
-    let query = db.query(sql, (err) => {
-  
-      if (err) {
-  
-        throw err;
-  
-      }
-  
-      res.send("Employee deleted");
-  
-    });
-  
-  });
-
-  app.listen("3000", () => {
-
-    console.log("Server started on port 3000");
-  
-  });
-  
-  
-  app.listen("3000", () => {
-  
-    console.log("Server started on port 3000");
-  
-  });
+  startapp();
