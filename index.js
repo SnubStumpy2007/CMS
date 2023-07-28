@@ -183,11 +183,22 @@ const addDepartment = (departmentId) => {
 }
 
 const viewDepartmentBudget = () => {
-  return connection.promise().query('SELECT * FROM role')
-}
+  const sql = `
+    SELECT d.id, d.name AS department_name, SUM(r.salary) AS total_budget
+    FROM department d
+    LEFT JOIN role r ON d.id = r.department_id
+    LEFT JOIN employee e ON r.id = e.role_id
+    GROUP BY d.id, d.name
+  `;
 
-const removeDepartment = () => {
-  return connection.promise().query('SELECT * FROM role')
+  return connection.promise().query(sql);
+};
+
+
+const removeDepartment = (department_id) => {
+  const sql = 'DELETE FROM department WHERE id = ?';
+  const values = [department_id];
+  return connection.promise().query(sql, values);
 }
 
   startapp();
