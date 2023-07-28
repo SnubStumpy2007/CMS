@@ -150,13 +150,16 @@ const removeEmployee = (firstName, lastName, roleId, departmentId) =>{
   return connection.promise().query(sql, values)
 }
 
-const updateEmployeeRole = (firstName, lastName, roleId) => {
-  const sql = 'UPDATE EmployeeRole '
-  return connection.promise().query('SELECT * FROM role')
+const updateEmployeeRole = (firstName, lastName, roleId, departmentId) => {
+  const sql = 'UPDATE employee SET first_name = ?, last_name = ?, role_id = ?, department_id = ? WHERE id = ?';
+  const values = [firstName, lastName, roleId, departmentId]
+  return connection.promise().query(sql, values)
 }
 
-const updateEmployeeManager = () => {
-  return connection.promise().query('SELECT * FROM role')
+const updateEmployeeManager = (firstName, lastName, roleId, departmentId, managerId) => {
+  const sql = 'UPDATE employee SET first_name = ?, last_name = ?, role_id = ?, department_id = ? WHERE id = ?';
+  const values = [firstName, lastName, roleId, departmentId, managerId]
+  return connection.promise().query(sql, values)
 }
 
 const addRole = () => {
@@ -164,11 +167,15 @@ const addRole = () => {
 }
 
 const removeRole = () => {
-  return connection.promise().query('SELECT * FROM role')
+  const sql = 'DELETE FROM employee (first_name, last_name, role_id, department_id)'
+  const values = [firstName, lastName, roleId, departmentId]
+  return connection.promise().query(sql, values)
 }
 
 const addDepartment = () => {
-  return connection.promise().query('INSERT INTO department (name) VALUES (?)', [departmentName]);
+  const sql = 'INSERT INTO employee (first_name, last_name, role_id, department_id)'
+  const values = [firstName, lastName, roleId, departmentId]
+  return connection.promise().query(sql, values)
 }
 
 const viewDepartmentBudget = () => {
