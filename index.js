@@ -6,6 +6,7 @@ const cTable = require('console.table');
 // const chalk = require('chalk');
 
 const connection = require('db');
+const comms = require('./config/connection')
 const { default: inquirer } = require('inquirer');
 
 
@@ -126,35 +127,41 @@ const viewAllDepartments = () => {
 };
 
 const viewAllRoles = () => {
-
+  return connection.promise().query('SELECT * FROM role')
 }
 
 const viewEmployeesByDepartment = () => {
-
+  return connection.promise().query(`
+    SELECT e.id, e.first_name, e.last_name, e.role_id, d.name AS department_name
+    FROM employee e
+    JOIN department d ON e.department_id = d.id
+  `);
 }
 
-const addEmployee = () => {
-
+const addEmployee = (firstName, lastName, roleId, departmentId) => {
+  const sql = 'INSERT INTO employee (first_name, last_name, role_id, department_id'
+  const values = [firstName, lastName, roleId, departmentId]
+  return connection.promise().query(sql, values)
 }
 
 const removeEmployee = () =>{
-
+  return connection.promise().query('SELECT * FROM role')
 }
 
 const updateEmployeeRole = () => {
-
+  return connection.promise().query('SELECT * FROM role')
 }
 
 const updateEmployeeManager = () => {
-
+  return connection.promise().query('SELECT * FROM role')
 }
 
 const addRole = () => {
-
+  return connection.promise().query('SELECT * FROM role')
 }
 
 const removeRole = () => {
-
+  return connection.promise().query('SELECT * FROM role')
 }
 
 const addDepartment = () => {
@@ -162,11 +169,11 @@ const addDepartment = () => {
 }
 
 const viewDepartmentBudget = () => {
-
+  return connection.promise().query('SELECT * FROM role')
 }
 
 const removeDepartment = () => {
-  
+  return connection.promise().query('SELECT * FROM role')
 }
 
   startapp();
