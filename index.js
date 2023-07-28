@@ -2,6 +2,7 @@ const express = require('express')
 const mysql = require('mysql2')
 const figlet = require('figlet')
 const cTable = require('console.table');
+
 // const chalk = require('chalk');
 
 const connection = require('db');
@@ -124,16 +125,48 @@ const viewAllDepartments = () => {
   return connection.promise().query('SELECT * FROM department');
 };
 
+const viewAllRoles = () => {
+
+}
+
+const viewEmployeesByDepartment = () => {
+
+}
+
+const addEmployee = () => {
+
+}
+
+const removeEmployee = () =>{
+
+}
+
+const updateEmployeeRole = () => {
+
+}
+
+const updateEmployeeManager = () => {
+
+}
+
+const addRole = () => {
+
+}
+
+const removeRole = () => {
+
+}
+
 const addDepartment = () => {
   return connection.promise().query('INSERT INTO department (name) VALUES (?)', [departmentName]);
 }
 
-const viewRoles = () => {
-  return connection.promise().query('SELECT * FROM department');
-};
+const viewDepartmentBudget = () => {
 
-const viewEmployees = () => {
-  return connection.promise().query('INSERT INTO department (name) VALUES (?)', [departmentName]);
+}
+
+const removeDepartment = () => {
+  
 }
 
   startapp();
