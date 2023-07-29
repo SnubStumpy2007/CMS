@@ -10,3 +10,4 @@ https://dev.mysql.com/doc/refman/8.0/en/select.html
 https://dev.mysql.com/doc/refman/8.0/en/join.html
 https://darifnemma.medium.com/how-to-interact-with-mysql-database-using-async-await-promises-in-node-js-9e6c81b683da
 https://www.w3schools.com/sql/sql_select.asp
+https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise

@@ -8,6 +8,7 @@ const cTable = require('console.table');
 const connection = require('db');
 const comms = require('./config/connection')
 const { default: inquirer } = require('inquirer');
+const ops = require('./config/operations')
 
 
 const app = express()
