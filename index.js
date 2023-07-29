@@ -201,4 +201,6 @@ const removeDepartment = (department_id) => {
   return connection.promise().query(sql, values);
 }
 
-  startapp();
+app.listen(3001, () => {
+  console.log('Server is running on port 3001');
+});
