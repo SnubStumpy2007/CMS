@@ -5,9 +5,9 @@ const cTable = require('console.table');
 
 // const chalk = require('chalk');
 
-const connection = require('db');
+//const connection = require('');
 const comms = require('./config/connection')
-const { default: inquirer } = require('inquirer');
+const inquirer = require('inquirer');
 const ops = require('./config/operations')
 
 
@@ -38,7 +38,7 @@ const prompt = () => {
   })
   .then((answers) => {
     const {choices} = answers;
-    if (choices === 'View All Employees') {
+    if (answers.choice === 'View All Employees') {
       viewAllEmployees();
   }
 
@@ -78,8 +78,15 @@ const prompt = () => {
       removeRole();
   }
 
-  if (choices === 'Add Department') {
-      addDepartment();
+  if (answers.choice === 'Add Department') {
+    inquirer.prompt({
+      name: 'name',
+    type: 'input',
+    message: 'Enter Department Name',
+    }).then(answers => {
+      addDepartment(answers.name);
+    })
+
   }
 
   if (choices === 'View Department Budgets') {
@@ -110,17 +117,25 @@ figlet("Welcome to the CMS!", function (err, data) {
   console.log(data);
 });
 
+prompt();
+
 const viewAllEmployees = () => {
   let sqlConnection =  `SELECT employee.id, 
   employee.first_name, 
   employee.last_name, 
   role.title, 
-  department.department_name AS 'department', 
+  department.name AS 'department', 
   role.salary
   FROM employee, role, department 
   WHERE department.id = role.department_id 
   AND role.id = employee.role_id
   ORDER BY employee.id ASC`;
+  comms.query(sqlConnection,(err,res) => {
+    if (err) {
+      console.log(err)
+    }  
+    console.table(res)
+  })
 }
 
 const viewAllDepartments = () => {
@@ -178,9 +193,9 @@ const removeRole = (roleId) => {
 
 
 const addDepartment = (departmentId) => {
-  const sql = 'UPDATE WHERE department_id WHERE id = ?'
+  const sql = 'INSERT INTO department (name) VALUES (?)'
   const values = [departmentId]
-  return connection.promise().query(sql, values)
+  return comms.query(sql, values)
 }
 
 const viewDepartmentBudget = () => {
