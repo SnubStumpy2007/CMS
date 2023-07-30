@@ -133,7 +133,7 @@ const prompt = () => {
   }
 
   if (choices === 'Exit') {
-      connection.end();
+      comms.end();
   }
   
   }})
@@ -183,12 +183,13 @@ const viewAllRoles = () => {
 }
 
 const viewEmployeesByDepartment = () => {
-  return connection.promise().query(`
+  const sql = `
     SELECT e.id, e.first_name, e.last_name, e.role_id, d.name AS department_name
     FROM employee e
     JOIN department d ON e.department_id = d.id
-  `);
-}
+  `;
+  return comms.query(sql); 
+};
 
 const addEmployee = (firstName, lastName, roleId, departmentId) => {
   const sql = 'INSERT INTO employee (first_name, last_name, role_id, department_id)'
@@ -243,7 +244,7 @@ const viewDepartmentBudget = () => {
     GROUP BY d.id, d.name
   `;
 
-  return comms.query(sql, values)
+  return comms.query(sql); // Remove 'values' from the query call
 };
 
 
