@@ -51,31 +51,66 @@ const prompt = () => {
   }
 
   if (choices === 'Add Employee') {
-      addEmployee();
+    inquirer.prompt({
+      name: 'name',
+    type: 'input',
+    message: 'Enter Employee Name',
+    }).then(answers => {
+      addEmployee(answers.name);
+    })
   }
 
   if (choices === 'Remove Employee') {
-      removeEmployee();
+    inquirer.prompt({
+      name: 'name',
+    type: 'input',
+    message: 'Enter Employee Name',
+    }).then(answers => {
+      removeEmployee(answers.name);
+    })
   }
 
   if (choices === 'Update Employee Role') {
-      updateEmployeeRole();
+    inquirer.prompt({
+      name: 'name',
+    type: 'input',
+    message: 'Enter Employee Name',
+    }).then(answers => {
+      updateEmployeeRole(answers.name);
+    })
   }
 
   if (choices === 'Update Employee Manager') {
-      updateEmployeeManager();
-  }
+    inquirer.prompt({
+      name: 'name',
+    type: 'input',
+    message: 'Enter the manager of the Employee',
+    }).then(answers => {
+      updateEmployeeManager(answers.name);
+    })
 
   if (choices === 'View All Roles') {
       viewAllRoles();
   }
 
   if (choices === 'Add Role') {
-      addRole();
+    inquirer.prompt({
+      name: 'name',
+    type: 'input',
+    message: 'Enter Role to Add',
+    }).then(answers => {
+      addRole(answers.name);
+    })
   }
 
   if (choices === 'Remove Role') {
-      removeRole();
+    inquirer.prompt({
+      name: 'name',
+    type: 'input',
+    message: 'Enter Role Name',
+    }).then(answers => {
+      removeRole(answers.name);
+    })
   }
 
   if (answers.choice === 'Add Department') {
@@ -100,7 +135,8 @@ const prompt = () => {
   if (choices === 'Exit') {
       connection.end();
   }
-  })
+  
+  }})
 }
 
 
@@ -139,11 +175,11 @@ const viewAllEmployees = () => {
 }
 
 const viewAllDepartments = () => {
-  return connection.promise().query('SELECT * FROM department');
+  return comms.query('SELECT * FROM department');
 };
 
 const viewAllRoles = () => {
-  return connection.promise().query('SELECT * FROM role')
+  return comms.query('SELECT * FROM role')
 }
 
 const viewEmployeesByDepartment = () => {
@@ -157,38 +193,38 @@ const viewEmployeesByDepartment = () => {
 const addEmployee = (firstName, lastName, roleId, departmentId) => {
   const sql = 'INSERT INTO employee (first_name, last_name, role_id, department_id)'
   const values = [firstName, lastName, roleId, departmentId]
-  return connection.promise().query(sql, values)
+  return comms.query(sql, values)
 }
 
 const removeEmployee = (firstName, lastName, roleId, departmentId) =>{
   const sql = 'DELETE FROM employee (first_name, last_name, role_id, department_id)'
   const values = [firstName, lastName, roleId, departmentId]
-  return connection.promise().query(sql, values)
+  return comms.query(sql, values)
 }
 
 const updateEmployeeRole = (firstName, lastName, roleId, departmentId) => {
   const sql = 'UPDATE employee SET first_name = ?, last_name = ?, role_id = ?, department_id = ? WHERE id = ?';
   const values = [firstName, lastName, roleId, departmentId]
-  return connection.promise().query(sql, values)
+  return comms.query(sql, values)
 }
 
 const updateEmployeeManager = (firstName, lastName, roleId, departmentId, managerId) => {
   const sql = 'UPDATE employee SET first_name = ?, last_name = ?, role_id = ?, department_id = ? WHERE id = ?';
   const values = [firstName, lastName, roleId, departmentId, managerId]
-  return connection.promise().query(sql, values)
+  return comms.query(sql, values)
 }
 
 const addRole = (title, salary, departmentId) => {
   const sql = 'INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)';
   const values = [title, salary, departmentId];
-  return connection.promise().query(sql, values);
+  return comms.query(sql, values)
 };
 
 
 const removeRole = (roleId) => {
   const sql = 'DELETE FROM role WHERE id = ?';
   const values = [roleId];
-  return connection.promise().query(sql, values);
+  return comms.query(sql, values)
 };
 
 
@@ -207,14 +243,14 @@ const viewDepartmentBudget = () => {
     GROUP BY d.id, d.name
   `;
 
-  return connection.promise().query(sql);
+  return comms.query(sql, values)
 };
 
 
 const removeDepartment = (department_id) => {
   const sql = 'DELETE FROM department WHERE id = ?';
   const values = [department_id];
-  return connection.promise().query(sql, values);
+  return comms.query(sql, values)
 }
 
 app.listen(3001, () => {
