@@ -56,6 +56,7 @@ Add, update, and remove employees, roles, and departments.
 Update employee role and manager.
 
 
+![cms](https://github.com/SnubStumpy2007/CMS/assets/25469843/cf0cf9a3-be6a-42e3-8d3d-619cab4f006a)
 
 # License
 MIT License
