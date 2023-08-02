@@ -8,8 +8,7 @@ const figlet = require('figlet')
 const comms = require('./config/connection')
 const inquirer = require('inquirer');
 const ops = require('./config/operations')
-const dbSeed = require('./db/seed');
-const dbSchema = require('./db/schema');
+
 
 
 const app = express()
@@ -173,6 +172,7 @@ const viewAllEmployees = () => {
     }  
     console.table(res)
   })
+  return prompt();
 }
 
 const viewAllDepartments = () => {
