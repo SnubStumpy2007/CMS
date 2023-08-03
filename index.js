@@ -37,20 +37,20 @@ const prompt = () => {
     ]
   })
   .then((answers) => {
-    const {choices} = answers;
-    if (answers.choice === 'View All Employees') {
+    const {choice} = answers;
+    if (choice === 'View All Employees') {
       viewAllEmployees();
   }
 
-  if (choices === 'View All Departments') {
+  if (choice === 'View All Departments') {
     viewAllDepartments();
   }
 
-  if (choices === 'View All Employees By Department') {
+  if (choice === 'View All Employees By Department') {
       viewEmployeesByDepartment();
   }
 
-  if (choices === 'Add Employee') {
+  if (choice === 'Add Employee') {
     inquirer.prompt({
       name: 'name',
     type: 'input',
@@ -60,7 +60,7 @@ const prompt = () => {
     })
   }
 
-  if (choices === 'Remove Employee') {
+  if (choice === 'Remove Employee') {
     inquirer.prompt({
       name: 'name',
     type: 'input',
@@ -70,7 +70,7 @@ const prompt = () => {
     })
   }
 
-  if (choices === 'Update Employee Role') {
+  if (choice === 'Update Employee Role') {
     inquirer.prompt({
       name: 'name',
     type: 'input',
@@ -80,7 +80,7 @@ const prompt = () => {
     })
   }
 
-  if (choices === 'Update Employee Manager') {
+  if (choice === 'Update Employee Manager') {
     inquirer.prompt({
       name: 'name',
     type: 'input',
@@ -89,11 +89,11 @@ const prompt = () => {
       updateEmployeeManager(answers.name);
     })
 
-  if (choices === 'View All Roles') {
+  if (choice === 'View All Roles') {
       viewAllRoles();
   }
 
-  if (choices === 'Add Role') {
+  if (choice === 'Add Role') {
     inquirer.prompt({
       name: 'name',
     type: 'input',
@@ -103,7 +103,7 @@ const prompt = () => {
     })
   }
 
-  if (choices === 'Remove Role') {
+  if (choice === 'Remove Role') {
     inquirer.prompt({
       name: 'name',
     type: 'input',
@@ -113,7 +113,7 @@ const prompt = () => {
     })
   }
 
-  if (answers.choice === 'Add Department') {
+  if (choice === 'Add Department') {
     inquirer.prompt({
       name: 'name',
     type: 'input',
@@ -124,15 +124,15 @@ const prompt = () => {
 
   }
 
-  if (choices === 'View Department Budgets') {
+  if (choice === 'View Department Budgets') {
       viewDepartmentBudget();
   }
 
-  if (choices === 'Remove Department') {
+  if (choice === 'Remove Department') {
       removeDepartment();
   }
 
-  if (choices === 'Exit') {
+  if (choice === 'Exit') {
       comms.end();
   }
   
@@ -170,26 +170,47 @@ const viewAllEmployees = () => {
     if (err) {
       console.log(err)
     }  
+    prompt();
     console.table(res)
   })
-  return prompt();
+  
 }
 
 const viewAllDepartments = () => {
-  return comms.query('SELECT * FROM department');
+  let sqlConnection =  `SELECT * FROM department`;
+  comms.query(sqlConnection,(err,res) => {
+    if (err) {
+     // throw(err);
+    }  
+    console.table(res)
+    prompt();
+  })
 };
 
 const viewAllRoles = () => {
-  return comms.query('SELECT * FROM role')
+  let sqlConnection =  `SELECT * FROM roles`;
+  comms.query(sqlConnection,(err,res) => {
+    if (err) {
+     // throw(err);
+    }  
+    console.table(res)
+    prompt();
+  })
 }
 
 const viewEmployeesByDepartment = () => {
-  const sql = `
-    SELECT e.id, e.first_name, e.last_name, e.role_id, d.name AS department_name
-    FROM employee e
-    JOIN department d ON e.department_id = d.id
-  `;
-  return comms.query(sql); 
+  let sqlConnection =  `
+  SELECT e.id, e.first_name, e.last_name, e.role_id, d.name AS department_name
+  FROM employee e
+  JOIN department d ON e.department_id = d.id
+`;
+  comms.query(sqlConnection,(err,res) => {
+    if (err) {
+     // throw(err);
+    }  
+    console.table(res)
+    prompt();
+  })
 };
 
 const addEmployee = (firstName, lastName, roleId, departmentId) => {
