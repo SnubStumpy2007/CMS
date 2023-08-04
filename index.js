@@ -25,7 +25,6 @@ const prompt = () => {
       'View All Roles',
       'View All Departments',
       'View All Employees By Department',
-      'View Department Budgets',
       'Update Employee Role',
       'Update Employee Manager',
       'Add Employee',
@@ -69,44 +68,106 @@ const prompt = () => {
         message: 'Enter Role ID:',
       },
       {
+        name: 'managerId',
+        type: 'input',
+        message: 'Enter Manager ID;'
+      },
+      {
         name: 'departmentId',
         type: 'input',
         message: 'Enter Department ID:',
       },
     ]).then(answers => {
-      addEmployee(answers.firstName, answers.lastName, answers.roleId, answers.departmentId);
+      addEmployee(answers.firstName, answers.lastName, answers.roleId, answers.managerId, answers.departmentId);
     });
   }
   
 
   if (choice === 'Remove Employee') {
-    inquirer.prompt({
-      name: 'name',
-    type: 'input',
-    message: 'Enter Employee Name',
-    }).then(answers => {
-      removeEmployee(answers.name);
-    })
+    inquirer.prompt([
+      {
+        name: 'firstName',
+        type: 'input',
+        message: 'Enter First Name:',
+      },
+      {
+        name: 'lastName',
+        type: 'input',
+        message: 'Enter Last Name:',
+      },
+      {
+        name: 'roleId',
+        type: 'input',
+        message: 'Enter Role ID:',
+      },
+      {
+        name: 'departmentId',
+        type: 'input',
+        message: 'Enter Department ID:',
+      },
+    ]).then(answers => {
+      removeEmployee(answers.firstName, answers.lastName, answers.roleId, answers.departmentId);
+    });
   }
 
   if (choice === 'Update Employee Role') {
-    inquirer.prompt({
-      name: 'name',
-    type: 'input',
-    message: 'Enter Employee Name',
-    }).then(answers => {
-      updateEmployeeRole(answers.name);
-    })
+    inquirer.prompt([
+      {
+        name: 'firstName',
+        type: 'input',
+        message: 'Enter First Name:',
+      },
+      {
+        name: 'lastName',
+        type: 'input',
+        message: 'Enter Last Name:',
+      },
+      {
+        name: 'roleId',
+        type: 'input',
+        message: 'Enter Role ID:',
+      },
+      {
+        name: 'departmentId',
+        type: 'input',
+        message: 'Enter Department ID:',
+      },
+    ]).then(answers => {
+      updateEmployeeRole(answers.firstName, answers.lastName, answers.roleId, answers.departmentId);
+    });
   }
 
   if (choice === 'Update Employee Manager') {
-    inquirer.prompt({
-      name: 'name',
-    type: 'input',
-    message: 'Enter the manager of the Employee',
-    }).then(answers => {
-      updateEmployeeManager(answers.name);
-    })
+    inquirer.prompt([
+      {
+        name: 'firstName',
+        type: 'input',
+        message: 'Enter First Name:',
+      },
+      {
+        name: 'lastName',
+        type: 'input',
+        message: 'Enter Last Name:',
+      },
+      {
+        name: 'roleId',
+        type: 'input',
+        message: 'Enter Role ID:',
+      },
+      {
+        name: 'departmentId',
+        type: 'input',
+        message: 'Enter Department ID:',
+      },
+      {
+        name: 'managerId',
+        type: 'input',
+        message: 'Enter the new manager:',
+      },
+    ]).then(answers => {
+      updateEmployeeManager(answers.firstName, answers.lastName, answers.roleId, answers.departmentId);
+    });
+  
 
   if (choice === 'View All Roles') {
       viewAllRoles();
@@ -143,10 +204,6 @@ const prompt = () => {
 
   }
 
-  if (choice === 'View Department Budgets') {
-      viewDepartmentBudget();
-  }
-
   if (choice === 'Remove Department') {
       removeDepartment();
   }
@@ -170,9 +227,10 @@ figlet("Welcome to the CMS!", function (err, data) {
     return;
   }
   console.log(data);
+  prompt();
 });
 
-prompt();
+
 
 const viewAllEmployees = () => {
   let sqlConnection =  `SELECT employee.id, 
@@ -189,10 +247,11 @@ const viewAllEmployees = () => {
     if (err) {
       console.error('Error executing the query:', err)
     }  
-    prompt();
+
     console.table(res)
+    prompt();
   })
-  
+ 
 }
 
 const viewAllDepartments = () => {
@@ -201,23 +260,25 @@ const viewAllDepartments = () => {
     if (err) {
       console.error('Error executing the query:', err)
     }  
-    prompt();
+    
     console.table(res)
+    prompt();
     
   })
 };
 
 const viewAllRoles = () => {
-  let sqlConnection =  `SELECT * FROM roles`;
-  comms.query(sqlConnection,(err,res) => {
+  let sqlConnection =  `SELECT * FROM role`;
+  comms.query(sqlConnection, (err, res) => {
     if (err) {
-      console.error('Error executing the query:', err)
-    }  
-    prompt();
-    console.table(res)
-    
-  })
+      console.error('Error executing the query:', err);
+    } else {
+      console.table(res);
+      prompt();
+    }
+  });
 }
+
 
 const viewEmployeesByDepartment = () => {
   let sqlConnection =  `
@@ -229,24 +290,27 @@ const viewEmployeesByDepartment = () => {
     if (err) {
       console.error('Error executing the query:', err)
     }  
-    prompt();
     console.table(res)
-    
+    prompt();    
   })
 };
 
-const addEmployee = (firstName, lastName, roleId, departmentId) => {
-  let sqlConnection =  `INSERT INTO employee (first_name, last_name, role_id, department_id)`;
-  const values = [firstName, lastName, roleId, departmentId];
-  comms.query(sqlConnection, values, (err,res) => {
+const addEmployee = (firstName, lastName, roleId, managerId, departmentId) => {
+  let sqlConnection =  `
+    INSERT INTO employee (first_name, last_name, role_id, manager_id, department_id)
+    VALUES (?, ?, ?, ?, ?)
+  `;
+  const values = [firstName, lastName, roleId, managerId, departmentId];
+  comms.query(sqlConnection, values, (err, res) => {
     if (err) {
-      console.error('Error executing the query:', err)
-      //throw err;
-    }  
+      console.error('Error executing the query:', err);
+    } else {
+      console.log('Employee added successfully.');
+    }
+    
     prompt();
-    console.table(res)
-  })
-}
+  });
+};
 
 const removeEmployee = () =>{
   let sqlConnection =  'DELETE FROM employee (first_name, last_name, role_id, department_id)';
@@ -254,9 +318,8 @@ const removeEmployee = () =>{
     if (err) {
       console.error('Error executing the query:', err)
     }  
-    prompt();
     console.table(res)
-   
+    prompt();
   })
 }
 
@@ -266,9 +329,8 @@ const updateEmployeeRole = () => {
     if (err) {
       console.error('Error executing the query:', err)
     }  
-    prompt();
     console.table(res)
- 
+    prompt();
   })
 }
 
@@ -278,9 +340,8 @@ const updateEmployeeManager = () => {
     if (err) {
       console.error('Error executing the query:', err)
     }  
-    prompt();
     console.table(res)
-  
+    prompt();
   })
 }
 
@@ -290,9 +351,8 @@ const addRole = () => {
     if (err) {
       console.error('Error executing the query:', err)
     }  
-    prompt();
     console.table(res)
-
+    prompt();
   })
 };
 
@@ -302,10 +362,9 @@ const removeRole = () => {
   comms.query(sqlConnection,(err,res) => {
     if (err) {
       console.error('Error executing the query:', err)
-    }  
-    prompt();
+    } 
     console.table(res)
-   
+    prompt();
   })
 };
 
@@ -316,40 +375,19 @@ const addDepartment = () => {
     if (err) {
       console.error('Error executing the query:', err)
     }  
-    prompt();
     console.table(res)
- 
+    prompt();
   })
 }
-
-const viewDepartmentBudget = () => {
-  let sqlConnection =  `
-  SELECT d.id, d.name AS department_name, SUM(r.salary) AS total_budget
-  FROM department d
-  LEFT JOIN role r ON d.id = r.department_id
-  LEFT JOIN employee e ON r.id = e.role_id
-  GROUP BY d.id, d.name
-`;
-c
-  comms.query(sqlConnection,(err,res) => {
-    if (err) {
-      console.error('Error executing the query:', err)
-    }  
-    prompt();
-    console.table(res)
-  })
-};
-
 
 const removeDepartment = () => {
   let sqlConnection =  'DELETE FROM department WHERE id = ?';
   comms.query(sqlConnection,(err,res) => {
     if (err) {
       console.error('Error executing the query:', err)
-    }  
-    prompt();
+    } 
     console.table(res)
-    
+    prompt();
   })
 }
 
