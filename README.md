@@ -72,3 +72,4 @@ https://darifnemma.medium.com/how-to-interact-with-mysql-database-using-async-aw
 https://www.w3schools.com/sql/sql_select.asp
 https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise
 Tutor Jacob Carver
+https://www.w3schools.com/sql/sql_delete.asp

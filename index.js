@@ -111,31 +111,45 @@ const prompt = () => {
   }
 
   if (choice === 'Update Employee Role') {
-    inquirer.prompt([
-      {
-        name: 'firstName',
-        type: 'input',
-        message: 'Enter First Name:',
-      },
-      {
-        name: 'lastName',
-        type: 'input',
-        message: 'Enter Last Name:',
-      },
-      {
-        name: 'roleId',
-        type: 'input',
-        message: 'Enter Role ID:',
-      },
-      {
-        name: 'departmentId',
-        type: 'input',
-        message: 'Enter Department ID:',
-      },
-    ]).then(answers => {
-      updateEmployeeRole(answers.firstName, answers.lastName, answers.roleId, answers.departmentId);
-    });
-  }
+    inquirer
+        .prompt([
+            {
+                name: 'employeeId',
+                type: 'input',
+                message: 'Enter the ID of the employee whose role you want to update:',
+            },
+            {
+                name: 'firstName',
+                type: 'input',
+                message: 'Enter new First Name:',
+            },
+            {
+                name: 'lastName',
+                type: 'input',
+                message: 'Enter new Last Name:',
+            },
+            {
+                name: 'roleId',
+                type: 'input',
+                message: 'Enter new Role ID:',
+            },
+            {
+                name: 'departmentId',
+                type: 'input',
+                message: 'Enter new Department ID:',
+            },
+        ])
+        .then(answers => {
+            updateEmployeeRole(
+                answers.firstName,
+                answers.lastName,
+                answers.roleId,
+                answers.departmentId,
+                answers.employeeId
+            );
+        });
+}
+
 
   if (choice === 'Update Employee Manager') {
     inquirer.prompt([
@@ -279,7 +293,7 @@ const viewAllRoles = () => {
   });
 }
 
-
+//done
 const viewEmployeesByDepartment = () => {
   let sqlConnection =  `
   SELECT e.id, e.first_name, e.last_name, e.role_id, d.name AS department_name
@@ -295,6 +309,7 @@ const viewEmployeesByDepartment = () => {
   })
 };
 
+//done
 const addEmployee = (firstName, lastName, roleId, managerId, departmentId) => {
   let sqlConnection =  `
     INSERT INTO employee (first_name, last_name, role_id, manager_id, department_id)
@@ -312,27 +327,43 @@ const addEmployee = (firstName, lastName, roleId, managerId, departmentId) => {
   });
 };
 
-const removeEmployee = () =>{
-  let sqlConnection =  'DELETE FROM employee (first_name, last_name, role_id, department_id)';
-  comms.query(sqlConnection,(err,res) => {
+const removeEmployee = (firstName, lastName, roleId, managerId, departmentId) => {
+  let sqlConnection = `
+    DELETE FROM employee
+    WHERE first_name = ? AND last_name = ? AND role_id = ? AND manager_id = ? AND department_id = ?
+  `;
+  const values = [firstName, lastName, roleId, managerId, departmentId];
+  comms.query(sqlConnection, values, (err, res) => {
     if (err) {
-      console.error('Error executing the query:', err)
-    }  
-    console.table(res)
+      console.error('Error executing the query:', err);
+    } else {
+      console.log('Employee removed successfully.');
+    }
+    
     prompt();
-  })
-}
+  });
+};
 
-const updateEmployeeRole = () => {
-  let sqlConnection =  'UPDATE employee SET first_name = ?, last_name = ?, role_id = ?, department_id = ? WHERE id = ?';
-  comms.query(sqlConnection,(err,res) => {
+// done
+const updateEmployeeRole = (firstName, lastName, roleId, departmentId, employeeId) => {
+  let sqlConnection = `
+    UPDATE employee
+    SET first_name = ?, last_name = ?, role_id = ?, department_id = ?
+    WHERE id = ?
+  `;
+  const values = [firstName, lastName, roleId, departmentId, employeeId];
+  
+  comms.query(sqlConnection, values, (err, res) => {
     if (err) {
-      console.error('Error executing the query:', err)
-    }  
-    console.table(res)
+      console.error('Error executing the query:', err);
+    } else {
+      console.log('Employee role updated successfully.');
+    }
+    
     prompt();
-  })
-}
+  });
+};
+
 
 const updateEmployeeManager = () => {
   let sqlConnection =  'UPDATE employee SET first_name = ?, last_name = ?, role_id = ?, department_id = ? WHERE id = ?';
