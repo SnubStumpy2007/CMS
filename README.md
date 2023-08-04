@@ -44,6 +44,9 @@ Contributions are welcome! If you find any bugs or have suggestions for improvem
 # License
 This project is licensed under the MIT License - see the LICENSE file for details.
 
+![cms](https://github.com/SnubStumpy2007/CMS/assets/25469843/a9a36a2e-d9f4-457a-a44f-f80ad3ef3dfb)
+
+
 # Sources
 https://github.com/WilliamCrownover/employee-content-management-system
 https://www.simplilearn.com/tutorials/nodejs-tutorial/nodejs-mysql
