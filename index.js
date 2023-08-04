@@ -1,11 +1,14 @@
 const express = require('express')
 const mysql = require('mysql2')
 const figlet = require('figlet')
-const cTable = require('console.table');
+
 // const chalk = require('chalk');
 
-const connection = require('db');
-const { default: inquirer } = require('inquirer');
+//const connection = require('');
+const comms = require('./config/connection')
+const inquirer = require('inquirer');
+const ops = require('./config/operations')
+
 
 
 const app = express()
@@ -34,63 +37,106 @@ const prompt = () => {
     ]
   })
   .then((answers) => {
-    const {choices} = answers;
-    if (choices === 'View All Employees') {
+    const {choice} = answers;
+    if (choice === 'View All Employees') {
       viewAllEmployees();
   }
 
-  if (choices === 'View All Departments') {
+  if (choice === 'View All Departments') {
     viewAllDepartments();
   }
 
-  if (choices === 'View All Employees By Department') {
+  if (choice === 'View All Employees By Department') {
       viewEmployeesByDepartment();
   }
 
-  if (choices === 'Add Employee') {
-      addEmployee();
+  if (choice === 'Add Employee') {
+    inquirer.prompt({
+      name: 'name',
+    type: 'input',
+    message: 'Enter Employee Name',
+    }).then(answers => {
+      addEmployee(answers.name);
+    })
   }
 
-  if (choices === 'Remove Employee') {
-      removeEmployee();
+  if (choice === 'Remove Employee') {
+    inquirer.prompt({
+      name: 'name',
+    type: 'input',
+    message: 'Enter Employee Name',
+    }).then(answers => {
+      removeEmployee(answers.name);
+    })
   }
 
-  if (choices === 'Update Employee Role') {
-      updateEmployeeRole();
+  if (choice === 'Update Employee Role') {
+    inquirer.prompt({
+      name: 'name',
+    type: 'input',
+    message: 'Enter Employee Name',
+    }).then(answers => {
+      updateEmployeeRole(answers.name);
+    })
   }
 
-  if (choices === 'Update Employee Manager') {
-      updateEmployeeManager();
-  }
+  if (choice === 'Update Employee Manager') {
+    inquirer.prompt({
+      name: 'name',
+    type: 'input',
+    message: 'Enter the manager of the Employee',
+    }).then(answers => {
+      updateEmployeeManager(answers.name);
+    })
 
-  if (choices === 'View All Roles') {
+  if (choice === 'View All Roles') {
       viewAllRoles();
   }
 
-  if (choices === 'Add Role') {
-      addRole();
+  if (choice === 'Add Role') {
+    inquirer.prompt({
+      name: 'name',
+    type: 'input',
+    message: 'Enter Role to Add',
+    }).then(answers => {
+      addRole(answers.name);
+    })
   }
 
-  if (choices === 'Remove Role') {
-      removeRole();
+  if (choice === 'Remove Role') {
+    inquirer.prompt({
+      name: 'name',
+    type: 'input',
+    message: 'Enter Role Name',
+    }).then(answers => {
+      removeRole(answers.name);
+    })
   }
 
-  if (choices === 'Add Department') {
-      addDepartment();
+  if (choice === 'Add Department') {
+    inquirer.prompt({
+      name: 'name',
+    type: 'input',
+    message: 'Enter Department Name',
+    }).then(answers => {
+      addDepartment(answers.name);
+    })
+
   }
 
-  if (choices === 'View Department Budgets') {
+  if (choice === 'View Department Budgets') {
       viewDepartmentBudget();
   }
 
-  if (choices === 'Remove Department') {
+  if (choice === 'Remove Department') {
       removeDepartment();
   }
 
-  if (choices === 'Exit') {
-      connection.end();
+  if (choice === 'Exit') {
+      comms.end();
   }
-  })
+  
+  }})
 }
 
 
@@ -107,81 +153,129 @@ figlet("Welcome to the CMS!", function (err, data) {
   console.log(data);
 });
 
+prompt();
+
 const viewAllEmployees = () => {
   let sqlConnection =  `SELECT employee.id, 
   employee.first_name, 
   employee.last_name, 
   role.title, 
-  department.department_name AS 'department', 
+  department.name AS 'department', 
   role.salary
   FROM employee, role, department 
   WHERE department.id = role.department_id 
   AND role.id = employee.role_id
   ORDER BY employee.id ASC`;
-
-  async function fetchData() {
-    try {
-      const [rows, fields] = await connection.promise().query(sqlConnection);
-      // Process the results stored in 'rows' here
-      console.log(rows); // This will contain the fetched data
+  comms.query(sqlConnection,(err,res) => {
+    if (err) {
+      console.log(err)
+    }  
+    prompt();
+    console.table(res)
+  })
   
-    } catch (error) {
-      console.error('Error executing the query:', error);
-    } finally {
-      connection.end(); // Close the connection when done
-    }
-  }
-  fetchData();
-}
-
-
-
-const viewAllRoles = () => {
-   const sqlConnection =     `SELECT role.id, role.title, department.department_name AS department
-                    FROM role 
-                    INNER JOIN department ON role.department_id = department.id`;
-async function fetchData() {
-  try {
-                        const [rows, fields] = await connection.promise().query(sqlConnection);
-                        // Process the results stored in 'rows' here
-                        console.log(rows); // This will contain the fetched data
-                    
-                      } catch (error) {
-                        console.error('Error executing the query:', error);
-                      } finally {
-                        connection.end(); // Close the connection when done
-                      }
-                    }
-                    fetchData();
 }
 
 const viewAllDepartments = () => {
-  const sqlConnection =  `SELECT department.id AS id, department.department_name AS department FROM department`; 
-  async function fetchData() {
-    try {
-      const [rows, fields] = await connection.promise().query(sqlConnection);
-      // Process the results stored in 'rows' here
-      console.log(rows); // This will contain the fetched data
-  
-    } catch (error) {
-      console.error('Error executing the query:', error);
-    } finally {
-      connection.end(); // Close the connection when done
-    }
-  }
-  fetchData();
-}
-
-const addDepartment = () => {
-  return connection.promise().query('INSERT INTO department (name) VALUES (?)', [departmentName]);
-}
-
-const viewRoles = () => {
-  return connection.promise().query('SELECT * FROM department');
+  let sqlConnection =  `SELECT * FROM department`;
+  comms.query(sqlConnection,(err,res) => {
+    if (err) {
+     // throw(err);
+    }  
+    console.table(res)
+    prompt();
+  })
 };
 
-const viewEmployees = () => {
-  return connection.promise().query('INSERT INTO department (name) VALUES (?)', [departmentName]);
+const viewAllRoles = () => {
+  let sqlConnection =  `SELECT * FROM roles`;
+  comms.query(sqlConnection,(err,res) => {
+    if (err) {
+     // throw(err);
+    }  
+    console.table(res)
+    prompt();
+  })
 }
 
-  startapp();
+const viewEmployeesByDepartment = () => {
+  let sqlConnection =  `
+  SELECT e.id, e.first_name, e.last_name, e.role_id, d.name AS department_name
+  FROM employee e
+  JOIN department d ON e.department_id = d.id
+`;
+  comms.query(sqlConnection,(err,res) => {
+    if (err) {
+     // throw(err);
+    }  
+    console.table(res)
+    prompt();
+  })
+};
+
+const addEmployee = (firstName, lastName, roleId, departmentId) => {
+  const sql = 'INSERT INTO employee (first_name, last_name, role_id, department_id)'
+  const values = [firstName, lastName, roleId, departmentId]
+  return comms.query(sql, values)
+}
+
+const removeEmployee = (firstName, lastName, roleId, departmentId) =>{
+  const sql = 'DELETE FROM employee (first_name, last_name, role_id, department_id)'
+  const values = [firstName, lastName, roleId, departmentId]
+  return comms.query(sql, values)
+}
+
+const updateEmployeeRole = (firstName, lastName, roleId, departmentId) => {
+  const sql = 'UPDATE employee SET first_name = ?, last_name = ?, role_id = ?, department_id = ? WHERE id = ?';
+  const values = [firstName, lastName, roleId, departmentId]
+  return comms.query(sql, values)
+}
+
+const updateEmployeeManager = (firstName, lastName, roleId, departmentId, managerId) => {
+  const sql = 'UPDATE employee SET first_name = ?, last_name = ?, role_id = ?, department_id = ? WHERE id = ?';
+  const values = [firstName, lastName, roleId, departmentId, managerId]
+  return comms.query(sql, values)
+}
+
+const addRole = (title, salary, departmentId) => {
+  const sql = 'INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)';
+  const values = [title, salary, departmentId];
+  return comms.query(sql, values)
+};
+
+
+const removeRole = (roleId) => {
+  const sql = 'DELETE FROM role WHERE id = ?';
+  const values = [roleId];
+  return comms.query(sql, values)
+};
+
+
+const addDepartment = (departmentId) => {
+  const sql = 'INSERT INTO department (name) VALUES (?)'
+  const values = [departmentId]
+  return comms.query(sql, values)
+}
+
+const viewDepartmentBudget = () => {
+  const sql = `
+    SELECT d.id, d.name AS department_name, SUM(r.salary) AS total_budget
+    FROM department d
+    LEFT JOIN role r ON d.id = r.department_id
+    LEFT JOIN employee e ON r.id = e.role_id
+    GROUP BY d.id, d.name
+  `;
+
+  return comms.query(sql); // Remove 'values' from the query call
+};
+
+
+const removeDepartment = (department_id) => {
+  const sql = 'DELETE FROM department WHERE id = ?';
+  const values = [department_id];
+  return comms.query(sql, values)
+}
+
+app.listen(3001, () => {
+  console.log('Server is running on port 3001');
+});
