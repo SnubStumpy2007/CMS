@@ -73,3 +73,9 @@ https://www.w3schools.com/sql/sql_select.asp
 https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise
 Tutor Jacob Carver
 https://www.w3schools.com/sql/sql_delete.asp
+https://www.w3schools.com/sql/sql_update.asp
+https://www.w3schools.com/sql/sql_alter.asp
+https://www.w3schools.com/sql/sql_select.asp
+https://www.w3schools.com/sql/sql_insert.asp
+TA Juan Torres
+TA Steven Cordova
