@@ -1,65 +1,48 @@
-## Employee Management System using Node.js and MySQL
-This is an Employee Management System built with Node.js and MySQL, providing a command-line interface (CLI) to manage employees, roles, and departments within an organization.
+## Employee Management System
+The Employee Management System is a command-line application that allows you to manage employees, roles, and departments in a company. It uses an Express.js server and communicates with a MySQL database to perform CRUD (Create, Read, Update, Delete) operations on employee-related data.
 
-# Table of Contents
-Introduction
-Requirements
-Installation
-Usage
-Functionality
-License
-Introduction
-The Employee Management System is a CLI application that allows users to perform various tasks related to managing employees, roles, and departments. It uses Node.js for the application logic and MySQL as the database to store employee information.
-
-# Requirements
-Node.js (v12 or above)
-MySQL database (make sure you have the necessary credentials)
-Installation
-Clone this repository to your local machine:
-bash
-Copy code
-git clone https://github.com/your-username/employee-management-system.git
-Change to the project directory:
-bash
-Copy code
-cd employee-management-system
-Install the required dependencies:
-bash
-Copy code
-npm install
-
-# Set up your MySQL database:
-
-Create a new database for the application (e.g., employee_management_db).
-Make sure to have your MySQL credentials ready (host, user, password).
-Create a .env file in the project root and add your MySQL credentials:
-
-
-DB_HOST=your_database_host
-DB_USER=your_database_user
-DB_PASSWORD=your_database_password
-DB_DATABASE=your_database_name
-
-# Usage
-To run the application, execute the following command in the project directory:
-
-node index.js
-The application will start, and you'll see the welcome message along with the available options.
-
-# Functionality
-The Employee Management System provides the following functionality through the CLI:
-
+# Features
 View all employees, roles, and departments.
 View employees by department.
-View department budgets.
-Add, update, and remove employees, roles, and departments.
-Update employee role and manager.
+Update an employee's role.
+Add new employees, roles, and departments.
+Exit the application.
 
+# Prerequisites
+Before you begin, ensure you have met the following requirements:
 
-![cms](https://github.com/SnubStumpy2007/CMS/assets/25469843/cf0cf9a3-be6a-42e3-8d3d-619cab4f006a)
+Node.js installed on your machine.
+MySQL server running with appropriate database and table structure.
+
+# Installation
+Clone this repository to your local machine:
+
+git clone https://github.com/SnubStumpy2007/CMS
+Navigate to the project directory:
+
+cd employee-management-system
+Install the required dependencies:
+
+npm install
+Update the MySQL database configuration:
+
+Open config/connection.js and modify the connection details to match your MySQL setup.
+
+# Initialize the application:
+
+node index.js
+
+# Usage
+Run the application by executing node index.js.
+Use the arrow keys to navigate through the menu and select options.
+Follow the prompts to perform various operations on employees, roles, and departments.
+Exit the application when you're done.
+
+# Contributing
+Contributions are welcome! If you find any bugs or have suggestions for improvements, feel free to create an issue or submit a pull request.
 
 # License
-MIT License
+This project is licensed under the MIT License - see the LICENSE file for details.
 
 # Sources
 https://github.com/WilliamCrownover/employee-content-management-system
