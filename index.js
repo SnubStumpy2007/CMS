@@ -206,55 +206,90 @@ const viewEmployeesByDepartment = () => {
 `;
   comms.query(sqlConnection,(err,res) => {
     if (err) {
-     // throw(err);
+      throw(err);
     }  
     console.table(res)
     prompt();
   })
 };
 
-const addEmployee = (firstName, lastName, roleId, departmentId) => {
-  const sql = 'INSERT INTO employee (first_name, last_name, role_id, department_id)'
-  const values = [firstName, lastName, roleId, departmentId]
-  return comms.query(sql, values)
+const addEmployee = () => {
+  let sqlConnection =  `INSERT INTO employee (first_name, last_name, role_id, department_id)`;
+  comms.query(sqlConnection,(err,res) => {
+    if (err) {
+      throw(err);
+    }  
+    console.table(res)
+    prompt();
+  })
 }
 
-const removeEmployee = (firstName, lastName, roleId, departmentId) =>{
-  const sql = 'DELETE FROM employee (first_name, last_name, role_id, department_id)'
-  const values = [firstName, lastName, roleId, departmentId]
-  return comms.query(sql, values)
+const removeEmployee = () =>{
+  let sqlConnection =  'DELETE FROM employee (first_name, last_name, role_id, department_id)';
+  comms.query(sqlConnection,(err,res) => {
+    if (err) {
+      throw(err);
+    }  
+    console.table(res)
+    prompt();
+  })
 }
 
-const updateEmployeeRole = (firstName, lastName, roleId, departmentId) => {
-  const sql = 'UPDATE employee SET first_name = ?, last_name = ?, role_id = ?, department_id = ? WHERE id = ?';
-  const values = [firstName, lastName, roleId, departmentId]
-  return comms.query(sql, values)
+const updateEmployeeRole = () => {
+  let sqlConnection =  'UPDATE employee SET first_name = ?, last_name = ?, role_id = ?, department_id = ? WHERE id = ?';
+  comms.query(sqlConnection,(err,res) => {
+    if (err) {
+      throw(err);
+    }  
+    console.table(res)
+    prompt();
+  })
 }
 
-const updateEmployeeManager = (firstName, lastName, roleId, departmentId, managerId) => {
-  const sql = 'UPDATE employee SET first_name = ?, last_name = ?, role_id = ?, department_id = ? WHERE id = ?';
-  const values = [firstName, lastName, roleId, departmentId, managerId]
-  return comms.query(sql, values)
+const updateEmployeeManager = () => {
+  let sqlConnection =  'UPDATE employee SET first_name = ?, last_name = ?, role_id = ?, department_id = ? WHERE id = ?';
+  comms.query(sqlConnection,(err,res) => {
+    if (err) {
+      throw(err);
+    }  
+    console.table(res)
+    prompt();
+  })
 }
 
-const addRole = (title, salary, departmentId) => {
-  const sql = 'INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)';
-  const values = [title, salary, departmentId];
-  return comms.query(sql, values)
+const addRole = () => {
+  let sqlConnection =  'INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)';
+  comms.query(sqlConnection,(err,res) => {
+    if (err) {
+      throw(err);
+    }  
+    console.table(res)
+    prompt();
+  })
 };
 
 
-const removeRole = (roleId) => {
-  const sql = 'DELETE FROM role WHERE id = ?';
-  const values = [roleId];
-  return comms.query(sql, values)
+const removeRole = () => {
+  let sqlConnection =  'DELETE FROM role WHERE id = ?';
+  comms.query(sqlConnection,(err,res) => {
+    if (err) {
+      throw(err);
+    }  
+    console.table(res)
+    prompt();
+  })
 };
 
 
-const addDepartment = (departmentId) => {
-  const sql = 'INSERT INTO department (name) VALUES (?)'
-  const values = [departmentId]
-  return comms.query(sql, values)
+const addDepartment = () => {
+  let sqlConnection =  'INSERT INTO department (name) VALUES (?)'
+  comms.query(sqlConnection,(err,res) => {
+    if (err) {
+      throw(err);
+    }  
+    console.table(res)
+    prompt();
+  })
 }
 
 const viewDepartmentBudget = () => {
@@ -266,14 +301,19 @@ const viewDepartmentBudget = () => {
     GROUP BY d.id, d.name
   `;
 
-  return comms.query(sql); // Remove 'values' from the query call
+  return comms.query(sql); 
 };
 
 
-const removeDepartment = (department_id) => {
-  const sql = 'DELETE FROM department WHERE id = ?';
-  const values = [department_id];
-  return comms.query(sql, values)
+const removeDepartment = () => {
+  let sqlConnection =  'DELETE FROM department WHERE id = ?';
+  comms.query(sqlConnection,(err,res) => {
+    if (err) {
+      throw(err);
+    }  
+    console.table(res)
+    prompt();
+  })
 }
 
 app.listen(3001, () => {
