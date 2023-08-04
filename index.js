@@ -118,11 +118,59 @@ const viewAllEmployees = () => {
   WHERE department.id = role.department_id 
   AND role.id = employee.role_id
   ORDER BY employee.id ASC`;
+
+  async function fetchData() {
+    try {
+      const [rows, fields] = await connection.promise().query(sqlConnection);
+      // Process the results stored in 'rows' here
+      console.log(rows); // This will contain the fetched data
+  
+    } catch (error) {
+      console.error('Error executing the query:', error);
+    } finally {
+      connection.end(); // Close the connection when done
+    }
+  }
+  fetchData();
+}
+
+
+
+const viewAllRoles = () => {
+   const sqlConnection =     `SELECT role.id, role.title, department.department_name AS department
+                    FROM role 
+                    INNER JOIN department ON role.department_id = department.id`;
+async function fetchData() {
+  try {
+                        const [rows, fields] = await connection.promise().query(sqlConnection);
+                        // Process the results stored in 'rows' here
+                        console.log(rows); // This will contain the fetched data
+                    
+                      } catch (error) {
+                        console.error('Error executing the query:', error);
+                      } finally {
+                        connection.end(); // Close the connection when done
+                      }
+                    }
+                    fetchData();
 }
 
 const viewAllDepartments = () => {
-  return connection.promise().query('SELECT * FROM department');
-};
+  const sqlConnection =  `SELECT department.id AS id, department.department_name AS department FROM department`; 
+  async function fetchData() {
+    try {
+      const [rows, fields] = await connection.promise().query(sqlConnection);
+      // Process the results stored in 'rows' here
+      console.log(rows); // This will contain the fetched data
+  
+    } catch (error) {
+      console.error('Error executing the query:', error);
+    } finally {
+      connection.end(); // Close the connection when done
+    }
+  }
+  fetchData();
+}
 
 const addDepartment = () => {
   return connection.promise().query('INSERT INTO department (name) VALUES (?)', [departmentName]);
