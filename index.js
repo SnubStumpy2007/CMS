@@ -30,9 +30,6 @@ const prompt = () => {
       'Add Employee',
       'Add Role',
       'Add Department',
-      'Remove Employee',
-      'Remove Role',
-      'Remove Department',
       'Exit'
     ]
   })
@@ -83,129 +80,72 @@ const prompt = () => {
   }
   
 
-  if (choice === 'Remove Employee') {
-    inquirer.prompt([
-      {
-        name: 'firstName',
-        type: 'input',
-        message: 'Enter First Name:',
-      },
-      {
-        name: 'lastName',
-        type: 'input',
-        message: 'Enter Last Name:',
-      },
-      {
-        name: 'roleId',
-        type: 'input',
-        message: 'Enter Role ID:',
-      },
-      {
-        name: 'departmentId',
-        type: 'input',
-        message: 'Enter Department ID:',
-      },
-    ]).then(answers => {
-      removeEmployee(answers.firstName, answers.lastName, answers.roleId, answers.departmentId);
-    });
-  }
-
   if (choice === 'Update Employee Role') {
     inquirer
-        .prompt([
-            {
-                name: 'employeeId',
-                type: 'input',
-                message: 'Enter the ID of the employee whose role you want to update:',
-            },
-            {
-                name: 'firstName',
-                type: 'input',
-                message: 'Enter new First Name:',
-            },
-            {
-                name: 'lastName',
-                type: 'input',
-                message: 'Enter new Last Name:',
-            },
-            {
-                name: 'roleId',
-                type: 'input',
-                message: 'Enter new Role ID:',
-            },
-            {
-                name: 'departmentId',
-                type: 'input',
-                message: 'Enter new Department ID:',
-            },
-        ])
-        .then(answers => {
-            updateEmployeeRole(
-                answers.firstName,
-                answers.lastName,
-                answers.roleId,
-                answers.departmentId,
-                answers.employeeId
-            );
-        });
-}
-
-
-  if (choice === 'Update Employee Manager') {
-    inquirer.prompt([
-      {
-        name: 'firstName',
-        type: 'input',
-        message: 'Enter First Name:',
-      },
-      {
-        name: 'lastName',
-        type: 'input',
-        message: 'Enter Last Name:',
-      },
-      {
-        name: 'roleId',
-        type: 'input',
-        message: 'Enter Role ID:',
-      },
-      {
-        name: 'departmentId',
-        type: 'input',
-        message: 'Enter Department ID:',
-      },
-      {
-        name: 'managerId',
-        type: 'input',
-        message: 'Enter the new manager:',
-      },
-    ]).then(answers => {
-      updateEmployeeManager(answers.firstName, answers.lastName, answers.roleId, answers.departmentId);
-    });
-  
+      .prompt([
+        {
+          name: 'employeeId',
+          type: 'input',
+          message: 'Enter the ID of the employee whose role you want to update:',
+        },
+        {
+          name: 'firstName',
+          type: 'input',
+          message: 'Enter new First Name:',
+        },
+        {
+          name: 'lastName',
+          type: 'input',
+          message: 'Enter new Last Name:',
+        },
+        {
+          name: 'roleId',
+          type: 'input',
+          message: 'Enter new Role ID:',
+        },
+        {
+          name: 'departmentId',
+          type: 'input',
+          message: 'Enter new Department ID:',
+        },
+      ])
+      .then(answers => {
+        updateEmployeeRole(
+          answers.firstName,
+          answers.lastName,
+          answers.roleId,
+          answers.departmentId,
+          answers.employeeId
+        );
+      });
+  }
 
   if (choice === 'View All Roles') {
       viewAllRoles();
   }
 
   if (choice === 'Add Role') {
-    inquirer.prompt({
-      name: 'name',
-    type: 'input',
-    message: 'Enter Role to Add',
-    }).then(answers => {
-      addRole(answers.name);
-    })
+    inquirer.prompt([
+      {
+        name: 'title',
+        type: 'input',
+        message: 'Enter Role Title:',
+      },
+      {
+        name: 'salary',
+        type: 'input',
+        message: 'Enter Role Salary:',
+      },
+      {
+        name: 'departmentId',
+        type: 'input',
+        message: 'Enter Department ID:',
+      },
+    ]).then(answers => {
+      addRole(answers.title, answers.salary, answers.departmentId);
+    });
   }
-
-  if (choice === 'Remove Role') {
-    inquirer.prompt({
-      name: 'name',
-    type: 'input',
-    message: 'Enter Role Name',
-    }).then(answers => {
-      removeRole(answers.name);
-    })
-  }
+  
 
   if (choice === 'Add Department') {
     inquirer.prompt({
@@ -215,19 +155,15 @@ const prompt = () => {
     }).then(answers => {
       addDepartment(answers.name);
     })
-
-  }
-
-  if (choice === 'Remove Department') {
-      removeDepartment();
   }
 
   if (choice === 'Exit') {
-      comms.end();
+    console.log('Exiting the application.');
+    comms.end();
+    process.exit(); // Add this line to exit the application
   }
-  
-  }})
-}
+ });
+};
 
 
 
@@ -245,7 +181,7 @@ figlet("Welcome to the CMS!", function (err, data) {
 });
 
 
-
+// done
 const viewAllEmployees = () => {
   let sqlConnection =  `SELECT employee.id, 
   employee.first_name, 
@@ -267,7 +203,7 @@ const viewAllEmployees = () => {
   })
  
 }
-
+// done
 const viewAllDepartments = () => {
   let sqlConnection =  `SELECT * FROM department`;
   comms.query(sqlConnection,(err,res) => {
@@ -280,7 +216,7 @@ const viewAllDepartments = () => {
     
   })
 };
-
+//done
 const viewAllRoles = () => {
   let sqlConnection =  `SELECT * FROM role`;
   comms.query(sqlConnection, (err, res) => {
@@ -327,22 +263,7 @@ const addEmployee = (firstName, lastName, roleId, managerId, departmentId) => {
   });
 };
 
-const removeEmployee = (firstName, lastName, roleId, managerId, departmentId) => {
-  let sqlConnection = `
-    DELETE FROM employee
-    WHERE first_name = ? AND last_name = ? AND role_id = ? AND manager_id = ? AND department_id = ?
-  `;
-  const values = [firstName, lastName, roleId, managerId, departmentId];
-  comms.query(sqlConnection, values, (err, res) => {
-    if (err) {
-      console.error('Error executing the query:', err);
-    } else {
-      console.log('Employee removed successfully.');
-    }
-    
-    prompt();
-  });
-};
+
 
 // done
 const updateEmployeeRole = (firstName, lastName, roleId, departmentId, employeeId) => {
@@ -364,64 +285,41 @@ const updateEmployeeRole = (firstName, lastName, roleId, departmentId, employeeI
   });
 };
 
+// done
+const addRole = (title, salary, departmentId) => {
+  let sqlConnection = 'INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)';
+  const values = [title, salary, departmentId];
 
-const updateEmployeeManager = () => {
-  let sqlConnection =  'UPDATE employee SET first_name = ?, last_name = ?, role_id = ?, department_id = ? WHERE id = ?';
-  comms.query(sqlConnection,(err,res) => {
+  comms.query(sqlConnection, values, (err, res) => {
     if (err) {
-      console.error('Error executing the query:', err)
-    }  
-    console.table(res)
-    prompt();
-  })
-}
+      console.error('Error executing the query:', err);
+    } else {
+      console.log('Role added successfully.');
+    }
 
-const addRole = () => {
-  let sqlConnection =  'INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)';
-  comms.query(sqlConnection,(err,res) => {
-    if (err) {
-      console.error('Error executing the query:', err)
-    }  
-    console.table(res)
     prompt();
-  })
+  });
 };
 
 
-const removeRole = () => {
-  let sqlConnection =  'DELETE FROM role WHERE id = ?';
-  comms.query(sqlConnection,(err,res) => {
+
+// done
+const addDepartment = (name) => {
+  let sqlConnection = 'INSERT INTO department (name) VALUES (?)';
+  const values = [name];
+
+  comms.query(sqlConnection, values, (err, res) => {
     if (err) {
-      console.error('Error executing the query:', err)
-    } 
-    console.table(res)
+      console.error('Error executing the query:', err);
+    } else {
+      console.log('Department added successfully.');
+    }
+
     prompt();
-  })
+  });
 };
 
-
-const addDepartment = () => {
-  let sqlConnection =  'INSERT INTO department (name) VALUES (?)'
-  comms.query(sqlConnection,(err,res) => {
-    if (err) {
-      console.error('Error executing the query:', err)
-    }  
-    console.table(res)
-    prompt();
-  })
-}
-
-const removeDepartment = () => {
-  let sqlConnection =  'DELETE FROM department WHERE id = ?';
-  comms.query(sqlConnection,(err,res) => {
-    if (err) {
-      console.error('Error executing the query:', err)
-    } 
-    console.table(res)
-    prompt();
-  })
-}
-
+  
 app.listen(3001, () => {
   console.log('Server is running on port 3001');
 });
