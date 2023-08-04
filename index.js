@@ -1,20 +1,17 @@
+// Import required modules
 const express = require('express')
 const mysql = require('mysql2')
 const figlet = require('figlet')
-
-// const chalk = require('chalk');
-
-//const connection = require('');
-const comms = require('./config/connection')
-const inquirer = require('inquirer');
+const comms = require('./config/connection') // Import custom connections
+const inquirer = require('inquirer'); // import inquirer packagee
 const ops = require('./config/operations');
 const { TextEncoderStream } = require('node:stream/web');
 
 
 
-const app = express()
+const app = express() // define this as an express app
 
-
+// Define a function to prompt the user with a list of choices
 const prompt = () => {
   inquirer.prompt({
     name: 'choice',
@@ -34,6 +31,7 @@ const prompt = () => {
     ]
   })
   .then((answers) => {
+       // Based on the user's choice, execute different functions
     const {choice} = answers;
     if (choice === 'View All Employees') {
       viewAllEmployees();
@@ -78,8 +76,7 @@ const prompt = () => {
       addEmployee(answers.firstName, answers.lastName, answers.roleId, answers.managerId, answers.departmentId);
     });
   }
-  
-
+//------------------------If Then choices.  Upon selection, call the appropiate responses and then appropiate functions---------------------------------------------------
   if (choice === 'Update Employee Role') {
     inquirer
       .prompt([
@@ -168,8 +165,12 @@ const prompt = () => {
 
 
 
-// ----------VIEW------------
-
+// ----------What you see on the terminal------------
+//-----------Contents from the database are displayed via a console.table or console.log method---------
+//-----------Database is in MySQL---------------------
+//-----------Roles are based of of what I've experienced staffing Dokidokon, an anime convention
+//-----------Sample characters are characters from the video game Tales of Xillia
+// Logo provided by Figlet
 figlet("Welcome to the CMS!", function (err, data) {
   if (err) {
     console.log("Something went wrong...");
@@ -181,7 +182,7 @@ figlet("Welcome to the CMS!", function (err, data) {
 });
 
 
-// done
+// Displays all Employees from the Employees table
 const viewAllEmployees = () => {
   let sqlConnection =  `SELECT employee.id, 
   employee.first_name, 
@@ -203,7 +204,7 @@ const viewAllEmployees = () => {
   })
  
 }
-// done
+// Views all Departments from the Department Table
 const viewAllDepartments = () => {
   let sqlConnection =  `SELECT * FROM department`;
   comms.query(sqlConnection,(err,res) => {
@@ -216,7 +217,7 @@ const viewAllDepartments = () => {
     
   })
 };
-//done
+// Views all Roles in the Roles table
 const viewAllRoles = () => {
   let sqlConnection =  `SELECT * FROM role`;
   comms.query(sqlConnection, (err, res) => {
@@ -229,7 +230,7 @@ const viewAllRoles = () => {
   });
 }
 
-//done
+// Lists Emplyess by department
 const viewEmployeesByDepartment = () => {
   let sqlConnection =  `
   SELECT e.id, e.first_name, e.last_name, e.role_id, d.name AS department_name
@@ -245,7 +246,7 @@ const viewEmployeesByDepartment = () => {
   })
 };
 
-//done
+// Adds an employee via Inquire above then adds to the database
 const addEmployee = (firstName, lastName, roleId, managerId, departmentId) => {
   let sqlConnection =  `
     INSERT INTO employee (first_name, last_name, role_id, manager_id, department_id)
@@ -265,7 +266,7 @@ const addEmployee = (firstName, lastName, roleId, managerId, departmentId) => {
 
 
 
-// done
+// Updates Employee Role in the database
 const updateEmployeeRole = (firstName, lastName, roleId, departmentId, employeeId) => {
   let sqlConnection = `
     UPDATE employee
@@ -285,7 +286,7 @@ const updateEmployeeRole = (firstName, lastName, roleId, departmentId, employeeI
   });
 };
 
-// done
+// Adds a Role row to the Role table
 const addRole = (title, salary, departmentId) => {
   let sqlConnection = 'INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)';
   const values = [title, salary, departmentId];
@@ -303,7 +304,7 @@ const addRole = (title, salary, departmentId) => {
 
 
 
-// done
+// Adds a departmeent row to the Department table
 const addDepartment = (name) => {
   let sqlConnection = 'INSERT INTO department (name) VALUES (?)';
   const values = [name];
@@ -319,7 +320,7 @@ const addDepartment = (name) => {
   });
 };
 
-  
+// Starts the application via Port 3001
 app.listen(3001, () => {
   console.log('Server is running on port 3001');
 });
