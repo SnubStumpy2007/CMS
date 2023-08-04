@@ -7,7 +7,8 @@ const figlet = require('figlet')
 //const connection = require('');
 const comms = require('./config/connection')
 const inquirer = require('inquirer');
-const ops = require('./config/operations')
+const ops = require('./config/operations');
+const { TextEncoderStream } = require('node:stream/web');
 
 
 
@@ -51,14 +52,32 @@ const prompt = () => {
   }
 
   if (choice === 'Add Employee') {
-    inquirer.prompt({
-      name: 'name',
-    type: 'input',
-    message: 'Enter Employee Name',
-    }).then(answers => {
-      addEmployee(answers.name);
-    })
+    inquirer.prompt([
+      {
+        name: 'firstName',
+        type: 'input',
+        message: 'Enter First Name:',
+      },
+      {
+        name: 'lastName',
+        type: 'input',
+        message: 'Enter Last Name:',
+      },
+      {
+        name: 'roleId',
+        type: 'input',
+        message: 'Enter Role ID:',
+      },
+      {
+        name: 'departmentId',
+        type: 'input',
+        message: 'Enter Department ID:',
+      },
+    ]).then(answers => {
+      addEmployee(answers.firstName, answers.lastName, answers.roleId, answers.departmentId);
+    });
   }
+  
 
   if (choice === 'Remove Employee') {
     inquirer.prompt({
@@ -168,7 +187,7 @@ const viewAllEmployees = () => {
   ORDER BY employee.id ASC`;
   comms.query(sqlConnection,(err,res) => {
     if (err) {
-      console.log(err)
+      console.error('Error executing the query:', err)
     }  
     prompt();
     console.table(res)
@@ -180,10 +199,11 @@ const viewAllDepartments = () => {
   let sqlConnection =  `SELECT * FROM department`;
   comms.query(sqlConnection,(err,res) => {
     if (err) {
-     // throw(err);
+      console.error('Error executing the query:', err)
     }  
-    console.table(res)
     prompt();
+    console.table(res)
+    
   })
 };
 
@@ -191,10 +211,11 @@ const viewAllRoles = () => {
   let sqlConnection =  `SELECT * FROM roles`;
   comms.query(sqlConnection,(err,res) => {
     if (err) {
-     // throw(err);
+      console.error('Error executing the query:', err)
     }  
-    console.table(res)
     prompt();
+    console.table(res)
+    
   })
 }
 
@@ -206,21 +227,24 @@ const viewEmployeesByDepartment = () => {
 `;
   comms.query(sqlConnection,(err,res) => {
     if (err) {
-      throw(err);
+      console.error('Error executing the query:', err)
     }  
-    console.table(res)
     prompt();
+    console.table(res)
+    
   })
 };
 
-const addEmployee = () => {
+const addEmployee = (firstName, lastName, roleId, departmentId) => {
   let sqlConnection =  `INSERT INTO employee (first_name, last_name, role_id, department_id)`;
-  comms.query(sqlConnection,(err,res) => {
+  const values = [firstName, lastName, roleId, departmentId];
+  comms.query(sqlConnection, values, (err,res) => {
     if (err) {
-      throw(err);
+      console.error('Error executing the query:', err)
+      //throw err;
     }  
-    console.table(res)
     prompt();
+    console.table(res)
   })
 }
 
@@ -228,10 +252,11 @@ const removeEmployee = () =>{
   let sqlConnection =  'DELETE FROM employee (first_name, last_name, role_id, department_id)';
   comms.query(sqlConnection,(err,res) => {
     if (err) {
-      throw(err);
+      console.error('Error executing the query:', err)
     }  
-    console.table(res)
     prompt();
+    console.table(res)
+   
   })
 }
 
@@ -239,10 +264,11 @@ const updateEmployeeRole = () => {
   let sqlConnection =  'UPDATE employee SET first_name = ?, last_name = ?, role_id = ?, department_id = ? WHERE id = ?';
   comms.query(sqlConnection,(err,res) => {
     if (err) {
-      throw(err);
+      console.error('Error executing the query:', err)
     }  
-    console.table(res)
     prompt();
+    console.table(res)
+ 
   })
 }
 
@@ -250,10 +276,11 @@ const updateEmployeeManager = () => {
   let sqlConnection =  'UPDATE employee SET first_name = ?, last_name = ?, role_id = ?, department_id = ? WHERE id = ?';
   comms.query(sqlConnection,(err,res) => {
     if (err) {
-      throw(err);
+      console.error('Error executing the query:', err)
     }  
-    console.table(res)
     prompt();
+    console.table(res)
+  
   })
 }
 
@@ -261,10 +288,11 @@ const addRole = () => {
   let sqlConnection =  'INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)';
   comms.query(sqlConnection,(err,res) => {
     if (err) {
-      throw(err);
+      console.error('Error executing the query:', err)
     }  
-    console.table(res)
     prompt();
+    console.table(res)
+
   })
 };
 
@@ -273,10 +301,11 @@ const removeRole = () => {
   let sqlConnection =  'DELETE FROM role WHERE id = ?';
   comms.query(sqlConnection,(err,res) => {
     if (err) {
-      throw(err);
+      console.error('Error executing the query:', err)
     }  
-    console.table(res)
     prompt();
+    console.table(res)
+   
   })
 };
 
@@ -285,23 +314,30 @@ const addDepartment = () => {
   let sqlConnection =  'INSERT INTO department (name) VALUES (?)'
   comms.query(sqlConnection,(err,res) => {
     if (err) {
-      throw(err);
+      console.error('Error executing the query:', err)
     }  
-    console.table(res)
     prompt();
+    console.table(res)
+ 
   })
 }
 
 const viewDepartmentBudget = () => {
-  const sql = `
-    SELECT d.id, d.name AS department_name, SUM(r.salary) AS total_budget
-    FROM department d
-    LEFT JOIN role r ON d.id = r.department_id
-    LEFT JOIN employee e ON r.id = e.role_id
-    GROUP BY d.id, d.name
-  `;
-
-  return comms.query(sql); 
+  let sqlConnection =  `
+  SELECT d.id, d.name AS department_name, SUM(r.salary) AS total_budget
+  FROM department d
+  LEFT JOIN role r ON d.id = r.department_id
+  LEFT JOIN employee e ON r.id = e.role_id
+  GROUP BY d.id, d.name
+`;
+c
+  comms.query(sqlConnection,(err,res) => {
+    if (err) {
+      console.error('Error executing the query:', err)
+    }  
+    prompt();
+    console.table(res)
+  })
 };
 
 
@@ -309,10 +345,11 @@ const removeDepartment = () => {
   let sqlConnection =  'DELETE FROM department WHERE id = ?';
   comms.query(sqlConnection,(err,res) => {
     if (err) {
-      throw(err);
+      console.error('Error executing the query:', err)
     }  
-    console.table(res)
     prompt();
+    console.table(res)
+    
   })
 }
 
